@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="전세사기 예방 서비스 - 전세가율·등기부·세금체납·보증보험을 한번에 확인하세요">
+<meta property="og:title" content="안심전세체크 - 전세사기 예방 서비스">
+<meta property="og:description" content="주소 하나로 전세가율·등기부·세금체납·보증보험을 즉시 분석">
+<meta property="og:type" content="website">
+<title>안심전세체크 — 전세사기 예방 서비스</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --red: #D94040;
+  --red-light: #FDF0F0;
+  --red-mid: #F5CACA;
+  --amber: #C97B1A;
+  --amber-light: #FEF8EE;
+  --amber-mid: #F9DFA0;
+  --green: #2E7D52;
+  --green-light: #EDF7F2;
+  --green-mid: #A8D9BC;
+  --blue: #1A5FA3;
+  --blue-light: #EEF5FD;
+  --gray-50: #F7F6F4;
+  --gray-100: #EDEBE8;
+  --gray-200: #D8D5D0;
+  --gray-400: #9C9890;
+  --gray-600: #5C5955;
+  --gray-800: #2A2826;
+  --gray-900: #1A1917;
+  --serif: 'Noto Serif KR', serif;
+  --sans: 'Noto Sans KR', sans-serif;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.10), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-lg: 0 12px 32px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--gray-50);
+  color: var(--gray-800);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--gray-900);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.logo-icon {
+  width: 32px; height: 32px;
+  background: var(--red);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.logo-text {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+.logo-text span { color: var(--red); }
+.header-nav { display: flex; gap: 4px; }
+.header-nav button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.6);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.header-nav button:hover, .header-nav button.active {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+.header-badge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: rgba(217,64,64,0.2);
+  color: #F5CACA;
+  border: 1px solid rgba(217,64,64,0.3);
+}
+
+/* ── HERO ── */
+.hero {
+  background: var(--gray-900);
+  padding: 64px 40px 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -100px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse, rgba(217,64,64,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red);
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.25;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+.hero h1 em { color: var(--red); font-style: normal; }
+.hero-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 40px;
+  max-width: 480px;
+  margin-left: auto; margin-right: auto;
+}
+
+/* ── SEARCH BOX ── */
+.search-container {
+  max-width: 680px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(8px);
+}
+.search-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.search-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+#addr-input {
+  flex: 1;
+  padding: 14px 18px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#addr-input::placeholder { color: rgba(255,255,255,0.3); }
+#addr-input:focus { border-color: var(--red); }
+.btn-analyze {
+  padding: 14px 28px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-analyze:hover { background: #C03535; transform: translateY(-1px); }
+.btn-analyze:active { transform: translateY(0); }
+.btn-analyze:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.quick-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.chip-label { font-size: 11px; color: rgba(255,255,255,0.3); }
+.chip {
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-family: var(--sans);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chip:hover { border-color: var(--red); color: #F5CACA; }
+
+/* ── API SETUP BANNER ── */
+.api-banner {
+  background: linear-gradient(135deg, #FEF8EE 0%, #FEF3E0 100%);
+  border: 1.5px solid #F9DFA0;
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin: 0 40px;
+  margin-top: -20px;
+  position: relative;
+  z-index: 10;
+  display: none;
+}
+.api-banner.show { display: flex; align-items: flex-start; gap: 14px; }
+.api-banner-icon { font-size: 24px; flex-shrink: 0; }
+.api-banner h3 { font-size: 14px; font-weight: 700; color: var(--amber); margin-bottom: 4px; }
+.api-banner p { font-size: 13px; color: var(--gray-600); line-height: 1.6; }
+.api-banner a { color: var(--amber); font-weight: 500; }
+.api-banner-close {
+  margin-left: auto;
+  background: none; border: none;
+  font-size: 18px; color: var(--gray-400);
+  cursor: pointer; flex-shrink: 0;
+  padding: 0 4px;
+}
+
+/* ── MAIN LAYOUT ── */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── MAP ── */
+.map-section { display: flex; flex-direction: column; gap: 16px; }
+.map-card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-100);
+  overflow: hidden;
+}
+.map-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.map-header h2 { font-size: 14px; font-weight: 700; color: var(--gray-800); }
+.map-header-info { font-size: 12px; color: var(--gray-400); }
+#map {
+  width: 100%;
+  height: 460px;
+  background: var(--gray-100);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.map-placeholder {
+  text-align: center;
+  color: var(--gray-400);
+}
+.map-placeholder .map-icon { font-size: 48px; margin-bottom: 12px; }
+.map-placeholder p { font-size: 14px; }
+.map-placeholder small { font-size: 12px; display: block; margin-top: 4px; }
+.map-setup-btn {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: var(--sans);
+}
+
+/* ── RESULT PANEL ── */
+.result-panel { display: flex; flex-direction: column; gap: 14px; }
+
+/* empty state */
+.empty-state {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-100);
+  padding: 48px 24px;
+  text-align: center;
+}
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-state h3 { font-size: 15px; font-weight: 700; color: var(--gray-600); margin-bottom: 6px; }
+.empty-state p { font-size: 13px; color: var(--gray-400); line-height: 1.7; }
+.data-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  margin-top: 14px;
+}
+.ds-tag {
+  padding: 3px 8px;
+  border-radius: 20px;
+  border: 1px solid var(--gray-200);
+  font-size: 10px;
+  color: var(--gray-400);
+}
+
+/* loading skeleton */
+.skeleton-card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-100);
+  padding: 20px;
+  display: none;
+}
+.skeleton-card.show { display: block; }
+.skel {
+  background: linear-gradient(90deg, var(--gray-100) 25%, var(--gray-50) 50%, var(--gray-100) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* result cards */
+.r-card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-100);
+  overflow: hidden;
+  display: none;
+  animation: slideUp 0.3s ease;
+}
+.r-card.show { display: block; }
+@keyframes slideUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+/* address card */
+.addr-card { padding: 16px 20px; }
+.addr-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+.addr-full { font-size: 15px; font-weight: 700; color: var(--gray-900); }
+.addr-sub { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+.risk-pill {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.risk-pill.danger { background: var(--red-light); color: var(--red); }
+.risk-pill.warning { background: var(--amber-light); color: var(--amber); }
+.risk-pill.safe { background: var(--green-light); color: var(--green); }
+
+/* score gauge */
+.score-gauge {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0 0;
+}
+.score-num { font-family: var(--serif); font-size: 52px; font-weight: 700; line-height: 1; }
+.score-num.danger { color: var(--red); }
+.score-num.warning { color: var(--amber); }
+.score-num.safe { color: var(--green); }
+.score-meta { flex: 1; }
+.score-bar-bg {
+  height: 8px;
+  background: var(--gray-100);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.score-bar-fill { height: 100%; border-radius: 4px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+.score-bar-fill.danger { background: var(--red); }
+.score-bar-fill.warning { background: var(--amber); }
+.score-bar-fill.safe { background: var(--green); }
+.score-desc { font-size: 12px; color: var(--gray-600); }
+
+/* check items */
+.checks-card { padding: 16px 20px; }
+.checks-title { font-size: 13px; font-weight: 700; color: var(--gray-600); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+.check-list { display: flex; flex-direction: column; gap: 8px; }
+.check-item {
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.check-item:hover { border-color: var(--gray-200); }
+.check-item.open { border-color: var(--gray-200); }
+.check-head { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+.check-icon-wrap {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.check-icon-wrap.red { background: var(--red-light); }
+.check-icon-wrap.amber { background: var(--amber-light); }
+.check-icon-wrap.green { background: var(--green-light); }
+.check-icon-wrap.blue { background: var(--blue-light); }
+.check-info { flex: 1; }
+.check-name { font-size: 13px; font-weight: 700; color: var(--gray-800); }
+.check-status { font-size: 11px; margin-top: 1px; font-weight: 500; }
+.check-status.danger { color: var(--red); }
+.check-status.warning { color: var(--amber); }
+.check-status.safe { color: var(--green); }
+.check-arrow { font-size: 12px; color: var(--gray-400); transition: transform 0.2s; }
+.check-item.open .check-arrow { transform: rotate(180deg); }
+.check-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+.check-item.open .check-body { max-height: 300px; }
+.check-body-inner {
+  padding: 0 14px 14px;
+  font-size: 12px;
+  color: var(--gray-600);
+  line-height: 1.8;
+  border-top: 1px solid var(--gray-100);
+  padding-top: 12px;
+}
+.check-body-inner strong { color: var(--gray-800); }
+
+/* price chart */
+.chart-card { padding: 16px 20px; }
+.chart-title { font-size: 13px; font-weight: 700; color: var(--gray-600); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.05em; display: flex; justify-content: space-between; align-items: center; }
+.chart-source { font-size: 10px; color: var(--gray-400); font-weight: 400; text-transform: none; letter-spacing: 0; }
+.chart-area { height: 100px; display: flex; align-items: flex-end; gap: 8px; margin-bottom: 8px; }
+.bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.bars { display: flex; gap: 2px; align-items: flex-end; width: 100%; justify-content: center; }
+.bar { width: 12px; border-radius: 3px 3px 0 0; transition: height 0.6s cubic-bezier(0.4,0,0.2,1); }
+.bar.sale { background: #B5D4F4; }
+.bar.rent { background: var(--red); }
+.bar-month { font-size: 10px; color: var(--gray-400); }
+.chart-legend { display: flex; gap: 12px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--gray-600); }
+.legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+.ratio-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-left: 6px;
+}
+.ratio-badge.danger { background: var(--red-light); color: var(--red); }
+.ratio-badge.warning { background: var(--amber-light); color: var(--amber); }
+.ratio-badge.safe { background: var(--green-light); color: var(--green); }
+
+/* tips */
+.tips-card { padding: 16px 20px; background: var(--amber-light); border: 1px solid var(--amber-mid) !important; }
+.tips-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.tips-header h3 { font-size: 13px; font-weight: 700; color: var(--amber); }
+.tips-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.tips-list li { font-size: 12px; color: var(--gray-600); display: flex; gap: 8px; line-height: 1.6; }
+.tips-list li::before { content: '→'; color: var(--amber); flex-shrink: 0; font-weight: 700; }
+
+/* action btns */
+.action-row { display: flex; gap: 8px; }
+.btn-action {
+  flex: 1;
+  padding: 10px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-action:hover { border-color: var(--gray-400); color: var(--gray-800); }
+.btn-action.primary { background: var(--gray-900); color: #fff; border-color: var(--gray-900); }
+.btn-action.primary:hover { background: var(--gray-800); }
+
+/* ── TABS (INFO / CHECKLIST) ── */
+.tab-section {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-100);
+  overflow: hidden;
+  display: none;
+}
+.tab-section.show { display: block; }
+.tab-header { display: flex; border-bottom: 1px solid var(--gray-100); }
+.tab-btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  background: none;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gray-400);
+  cursor: pointer;
+  transition: all 0.15s;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.tab-btn.active { color: var(--red); border-bottom-color: var(--red); }
+.tab-content { padding: 20px; display: none; }
+.tab-content.active { display: block; }
+
+/* info cards */
+.info-list { display: flex; flex-direction: column; gap: 14px; }
+.info-item { display: flex; gap: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--gray-100); }
+.info-item:last-child { border-bottom: none; padding-bottom: 0; }
+.info-emoji { font-size: 28px; flex-shrink: 0; }
+.info-item h4 { font-size: 13px; font-weight: 700; color: var(--gray-800); margin-bottom: 4px; }
+.info-item p { font-size: 12px; color: var(--gray-600); line-height: 1.7; }
+.info-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.info-tag {
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  background: var(--gray-100);
+  color: var(--gray-600);
+}
+.info-tag.danger { background: var(--red-light); color: var(--red); }
+.info-tag.warning { background: var(--amber-light); color: var(--amber); }
+
+/* checklist */
+.cl-progress {
+  background: var(--gray-50);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.cl-progress-top { display: flex; justify-content: space-between; font-size: 12px; color: var(--gray-600); margin-bottom: 8px; }
+.cl-progress-top strong { color: var(--green); }
+.prog-bg { height: 6px; background: var(--gray-200); border-radius: 3px; overflow: hidden; }
+.prog-fill { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.4s ease; }
+.cl-group-label { font-size: 11px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.08em; margin: 14px 0 8px; }
+.cl-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gray-100);
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 6px;
+}
+.cl-item:hover { border-color: var(--gray-200); background: var(--gray-50); }
+.cl-item.done { background: var(--green-light); border-color: var(--green-mid); }
+.cl-box {
+  width: 20px; height: 20px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 5px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  margin-top: 1px;
+}
+.cl-item.done .cl-box { background: var(--green); border-color: var(--green); }
+.cl-item.done .cl-box::after { content: '✓'; color: #fff; font-size: 11px; font-weight: 700; }
+.cl-item strong { font-size: 13px; font-weight: 500; color: var(--gray-800); display: block; margin-bottom: 2px; }
+.cl-item span { font-size: 11px; color: var(--gray-400); }
+.cl-item.done strong, .cl-item.done span { color: var(--green); }
+
+/* ── API MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.modal-head {
+  padding: 24px 28px 16px;
+  border-bottom: 1px solid var(--gray-100);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.modal-head h2 { font-family: var(--serif); font-size: 20px; font-weight: 700; color: var(--gray-900); }
+.modal-head p { font-size: 13px; color: var(--gray-400); margin-top: 4px; }
+.modal-close { background: none; border: none; font-size: 22px; color: var(--gray-400); cursor: pointer; padding: 0; flex-shrink: 0; }
+.modal-body { padding: 24px 28px; }
+.api-step {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--gray-100);
+}
+.api-step:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+.step-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--gray-900);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.api-step h3 { font-size: 14px; font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+.api-step p { font-size: 13px; color: var(--gray-600); line-height: 1.7; }
+.api-step a { color: var(--blue); font-weight: 500; }
+.api-step code {
+  display: block;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-100);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--gray-800);
+  margin-top: 8px;
+  font-family: monospace;
+  line-height: 1.7;
+}
+.modal-foot {
+  padding: 16px 28px 24px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.btn-modal-close {
+  padding: 10px 20px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  background: #fff;
+  font-family: var(--sans);
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--gray-600);
+}
+.btn-modal-primary {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: var(--gray-900);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--gray-900);
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+  padding: 28px 40px;
+  font-size: 12px;
+  line-height: 1.8;
+}
+footer a { color: rgba(255,255,255,0.5); }
+footer strong { color: rgba(255,255,255,0.7); }
+
+/* ── SPINNER ── */
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+.spinner.show { display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  header { padding: 0 20px; }
+  .hero { padding: 40px 20px 60px; }
+  .api-banner { margin: 0 20px; }
+  .main { padding: 24px 20px 60px; grid-template-columns: 1fr; }
+  #map { height: 320px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a class="logo" href="#">
+    <div class="logo-icon">🛡</div>
+    <span class="logo-text">안심전세<span>체크</span></span>
+  </a>
+  <nav class="header-nav">
+    <button class="active" onclick="showSection('search')">주소 조회</button>
+    <button onclick="showSection('info')">사기 유형</button>
+    <button onclick="showSection('checklist')">체크리스트</button>
+    <button onclick="openModal()">⚙ API 설정</button>
+  </nav>
+  <span class="header-badge">BETA</span>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">전세사기 예방 서비스</div>
+  <h1>계약 전, <em>10초</em>면<br>전세사기 위험을 알 수 있습니다</h1>
+  <p class="hero-sub">한국부동산원 · 등기부등본 · HUG · 국세청 데이터를<br>하나로 통합 분석합니다</p>
+
+  <div class="search-container">
+    <div class="search-label">🔍 주소 입력 (도로명 또는 지번 모두 가능)</div>
+    <div class="search-row">
+      <input type="text" id="addr-input"
+        placeholder="예: 서울특별시 마포구 공덕동 105-3"
+        autocomplete="off" />
+      <button class="btn-analyze" id="analyze-btn" onclick="doAnalyze()">
+        <span class="spinner" id="spin"></span>
+        <span id="btn-text">분석하기</span>
+      </button>
+    </div>
+    <div class="quick-chips">
+      <span class="chip-label">예시 주소:</span>
+      <button class="chip" onclick="setAddr('서울특별시 마포구 공덕동 105-3')">마포구 공덕동 (주의)</button>
+      <button class="chip" onclick="setAddr('인천광역시 미추홀구 주안동 778')">인천 미추홀구 (위험)</button>
+      <button class="chip" onclick="setAddr('서울특별시 강서구 화곡동 371-2')">강서구 화곡동 (안전)</button>
+    </div>
+  </div>
+</section>
+
+<!-- API BANNER -->
+<div class="api-banner" id="api-banner">
+  <div class="api-banner-icon">⚠️</div>
+  <div>
+    <h3>카카오맵 API 키가 설정되지 않았습니다</h3>
+    <p>지도 기능을 사용하려면 무료 카카오맵 API 키가 필요합니다.
+       <a href="#" onclick="openModal(); return false;">설정 가이드 보기</a> — 5분이면 완료됩니다.</p>
+  </div>
+  <button class="api-banner-close" onclick="document.getElementById('api-banner').classList.remove('show')">✕</button>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="main" id="main-content">
+
+  <!-- LEFT: MAP + INFO/CHECKLIST tabs -->
+  <div class="map-section">
+
+    <!-- MAP CARD -->
+    <div class="map-card" id="map-card">
+      <div class="map-header">
+        <h2>📍 지도에서 위치 확인</h2>
+        <span class="map-header-info" id="map-header-info">주소를 입력하면 지도에 표시됩니다</span>
+      </div>
+      <div id="map">
+        <div class="map-placeholder" id="map-placeholder">
+          <div class="map-icon">🗺</div>
+          <p>카카오맵 API 설정 후 지도를 사용할 수 있습니다</p>
+          <small>무료 API 키 발급: <strong>developers.kakao.com</strong></small>
+          <button class="map-setup-btn" onclick="openModal()">API 키 설정 가이드 보기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS: INFO + CHECKLIST -->
+    <div class="tab-section show" id="tab-section">
+      <div class="tab-header">
+        <button class="tab-btn active" onclick="switchTab('info')">📚 전세사기 유형</button>
+        <button class="tab-btn" onclick="switchTab('checklist')">✅ 계약 체크리스트</button>
+      </div>
+
+      <div id="tab-info" class="tab-content active">
+        <div class="info-list">
+          <div class="info-item">
+            <div class="info-emoji">🫧</div>
+            <div>
+              <h4>깡통전세 — 가장 흔한 유형</h4>
+              <p>전세가율(매매가 대비 전세가 비율)이 80% 이상이면 집값 하락 시 보증금 반환이 어렵습니다. 최근 빌라·오피스텔에서 급증하고 있습니다.</p>
+              <div class="info-tags">
+                <span class="info-tag danger">전세가율 80% 이상 위험</span>
+                <span class="info-tag">한국부동산원 시세 확인</span>
+              </div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-emoji">📄</div>
+            <div>
+              <h4>등기부 함정 — 근저당·가압류</h4>
+              <p>집주인이 근저당 대출을 숨기는 경우입니다. 선순위 채권 합산액이 보증금보다 많으면 경매 시 전액 손실됩니다.</p>
+              <div class="info-tags">
+                <span class="info-tag danger">경매 시 전액 손실 위험</span>
+                <span class="info-tag">계약 당일 직접 발급</span>
+              </div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-emoji">💸</div>
+            <div>
+              <h4>집주인 세금체납 — 공공의 적</h4>
+              <p>국세·지방세 체납액은 전세보증금보다 법적으로 우선 변제됩니다. 체납 집주인과 계약 시 보증금을 받지 못할 수 있습니다.</p>
+              <div class="info-tags">
+                <span class="info-tag danger">세금이 보증금보다 우선</span>
+                <span class="info-tag warning">2023년 열람권 강화</span>
+              </div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-emoji">🤝</div>
+            <div>
+              <h4>이중계약 — 중복 전세</h4>
+              <p>동일 주택에 여러 명과 전세 계약하는 수법입니다. 전입신고와 확정일자를 이사 당일 즉시 받아야 대항력이 생깁니다.</p>
+              <div class="info-tags">
+                <span class="info-tag">이사 당일 전입신고 필수</span>
+                <span class="info-tag">확정일자 동시 취득</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-checklist" class="tab-content">
+        <div class="cl-progress">
+          <div class="cl-progress-top">
+            <span>계약 전 체크리스트</span>
+            <strong id="cl-count">0 / 10 완료</strong>
+          </div>
+          <div class="prog-bg"><div class="prog-fill" id="cl-bar" style="width:0%"></div></div>
+        </div>
+
+        <div class="cl-group-label">📋 계약 전 서류 확인</div>
+        <div class="cl-item" onclick="toggleCl(this)"><div class="cl-box"></div><div><strong>등기부등본 직접 발급 (계약 당일)</strong><span>대법원 인터넷등기소 → 공인중개사 제공본 절대 불가</span></div></div>
+        <div class="cl-item" onclick="toggleCl(this)"><div class="cl-box"></div><div><strong>집주인 신분증 & 소유자 일치 확인</strong><span>대리인 계약 시 위임장 + 인감증명서 필수</span></div></div>
+        <div class="cl-item" onclick="toggleCl(this)"><div class="cl-box"></div><div><strong>국세 완납증명서 요청</strong><span>홈택스 발급 3개월 이내 → 거부 시 계약 중단 권장</span></div></div>
+        <div class="cl-item" onclick="toggleCl(this)"><div class="cl-box"></div><div><strong>지방세 납세증명서 확인</strong><span>위택스 발급 → 체납 이력 있으면 위험</span></div></div>
+        <div class="cl-item" onclick="toggleCl(this)"><div class="cl-box"></div><div><strong>선순위 임차인 현황 파악</strong><span>주민센터 확정일자 부여 현황 열람</span></div></div>
+
+        <div class="cl-group-label">🏦 금융 · 보증</div>
+        <div class="cl-item" onclick="toggleCl(this)"><div class="cl-box"></div><div><strong>전세가율 80% 이하 확인</strong><span>한국부동산원 실거래가 기준 확인</span></div></div>
+        <div class="cl-item" onclick="toggleCl(this)"><div class="cl-box"></div><div><strong>HUG 전세보증보험 가입 가능 여부</strong><span>HUG 사이트 또는 은행 창구에서 사전 확인</span></div></div>
+        <div class="cl-item" onclick="toggleCl(this)"><div class="cl-box"></div><div><strong>근저당 + 보증금 합산 ÷ 시세 ≤ 80%</strong><span>초과 시 경매 손실 위험</span></div></div>
+
+        <div class="cl-group-label">📝 계약 후</div>
+        <div class="cl-item" onclick="toggleCl(this)"><div class="cl-box"></div><div><strong>전입신고 + 확정일자 이사 당일</strong><span>동주민센터 또는 정부24</span></div></div>
+        <div class="cl-item" onclick="toggleCl(this)"><div class="cl-box"></div><div><strong>전세보증보험 가입 완료</strong><span>HUG(1566-9009) · SGI서울보증 · 입주 후 1개월 이내</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: RESULT PANEL -->
+  <div class="result-panel" id="result-panel">
+
+    <!-- Empty State -->
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">🏠</div>
+      <h3>주소를 입력하고 분석하기를 눌러주세요</h3>
+      <p>전세가율 · 등기부등본 · 세금체납 · 보증보험<br>4가지 핵심 항목을 즉시 분석합니다</p>
+      <div class="data-sources">
+        <span class="ds-tag">한국부동산원</span>
+        <span class="ds-tag">대법원등기</span>
+        <span class="ds-tag">HUG</span>
+        <span class="ds-tag">국세청</span>
+        <span class="ds-tag">호갱노노</span>
+        <span class="ds-tag">아실</span>
+        <span class="ds-tag">디스코</span>
+        <span class="ds-tag">네이버부동산</span>
+      </div>
+    </div>
+
+    <!-- Skeleton -->
+    <div class="r-card skeleton-card" id="skeleton">
+      <div class="skel" style="height:20px;width:60%;margin-bottom:12px"></div>
+      <div class="skel" style="height:14px;width:40%;margin-bottom:24px"></div>
+      <div class="skel" style="height:60px;margin-bottom:16px"></div>
+      <div class="skel" style="height:14px;margin-bottom:8px"></div>
+      <div class="skel" style="height:14px;width:80%;margin-bottom:8px"></div>
+      <div class="skel" style="height:14px;width:60%"></div>
+    </div>
+
+    <!-- Address + Score -->
+    <div class="r-card" id="r-addr">
+      <div class="addr-card">
+        <div class="addr-card-top">
+          <div>
+            <div class="addr-full" id="r-addr-text">—</div>
+            <div class="addr-sub" id="r-addr-sub">—</div>
+          </div>
+          <div class="risk-pill" id="r-risk-pill">—</div>
+        </div>
+        <div class="score-gauge">
+          <div class="score-num" id="r-score">—</div>
+          <div class="score-meta">
+            <div class="score-bar-bg"><div class="score-bar-fill" id="r-score-bar" style="width:0%"></div></div>
+            <div class="score-desc" id="r-score-desc">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 Checks -->
+    <div class="r-card" id="r-checks">
+      <div class="checks-card">
+        <div class="checks-title">항목별 분석 결과</div>
+        <div class="check-list" id="check-list"></div>
+      </div>
+    </div>
+
+    <!-- Price Chart -->
+    <div class="r-card" id="r-chart">
+      <div class="chart-card">
+        <div class="chart-title">
+          매매가 vs 전세가 추이 (6개월)
+          <span class="chart-source">출처: 한국부동산원 R-ONE</span>
+        </div>
+        <div class="chart-area" id="chart-area"></div>
+        <div class="chart-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#B5D4F4"></div>매매가</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>전세가</div>
+          <div style="margin-left:auto;font-size:11px;color:var(--gray-400)">현재 전세가율 <span class="ratio-badge" id="r-ratio-badge"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="r-card tips-card" id="r-tips">
+      <div class="tips-header">
+        <span>💡</span>
+        <h3>AI 분석 권고사항</h3>
+      </div>
+      <ul class="tips-list" id="tips-list"></ul>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="r-card" id="r-actions" style="padding:16px 20px;">
+      <div class="action-row">
+        <button class="btn-action" onclick="window.open('https://www.iros.go.kr','_blank')">📄 등기부 직접 조회</button>
+        <button class="btn-action" onclick="window.open('https://www.hug.or.kr','_blank')">🛡 HUG 보증보험</button>
+        <button class="btn-action primary" onclick="window.print()">🖨 결과 인쇄</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <strong>안심전세체크</strong> — 전세사기 예방 서비스<br>
+  이 서비스는 공공 데이터 기반 참고 정보를 제공합니다. 최종 계약 결정 전 반드시 전문가(변호사·공인중개사)와 상담하세요.<br>
+  문의: <a href="tel:1644-2828">주택도시보증공사 1566-9009</a> · <a href="tel:132">법률구조공단 132</a><br>
+  <small style="opacity:0.5;font-size:10px;">데이터 출처: 한국부동산원 R-ONE · 대법원 인터넷등기소 · HUG · 국세청 · 지방세정보시스템</small>
+</footer>
+
+<!-- API GUIDE MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <h2>🗺 카카오맵 API 설정 가이드</h2>
+        <p>무료 API 키 발급 후 index.html에 한 줄만 수정하면 됩니다</p>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="api-step">
+        <div class="step-num">1</div>
+        <div>
+          <h3>카카오 개발자 계정 만들기</h3>
+          <p>카카오 계정이 있으면 바로 사용 가능합니다.<br>
+          <a href="https://developers.kakao.com" target="_blank">developers.kakao.com</a> → 로그인 → 내 애플리케이션</p>
+        </div>
+      </div>
+      <div class="api-step">
+        <div class="step-num">2</div>
+        <div>
+          <h3>애플리케이션 등록</h3>
+          <p>애플리케이션 추가하기 → 앱 이름: <strong>안심전세체크</strong> → 저장<br>
+          생성된 앱의 <strong>JavaScript 키</strong>를 복사합니다.</p>
+        </div>
+      </div>
+      <div class="api-step">
+        <div class="step-num">3</div>
+        <div>
+          <h3>플랫폼 등록 (GitHub Pages URL 입력)</h3>
+          <p>앱 설정 → 플랫폼 → Web → 사이트 도메인 추가:<br>
+          GitHub Pages 배포 시: <strong>https://[내 깃허브 아이디].github.io</strong></p>
+          <code>예시: https://honggildong.github.io</code>
+        </div>
+      </div>
+      <div class="api-step">
+        <div class="step-num">4</div>
+        <div>
+          <h3>index.html에서 API 키 교체</h3>
+          <p>index.html 파일을 열어 아래 줄을 찾아 본인의 키로 교체하세요:</p>
+          <code>// ↓↓ 이 줄을 찾아 YOUR_KAKAO_API_KEY를 실제 키로 교체
+const KAKAO_API_KEY = 'YOUR_KAKAO_API_KEY';</code>
+        </div>
+      </div>
+      <div class="api-step">
+        <div class="step-num">5</div>
+        <div>
+          <h3>GitHub Pages 배포하기</h3>
+          <p>1. GitHub에서 새 레포지토리 생성 (이름: <strong>jeonse-check</strong>)<br>
+          2. index.html 파일 업로드<br>
+          3. Settings → Pages → Source: <strong>main branch</strong> 선택<br>
+          4. 몇 분 후 <strong>https://[아이디].github.io/jeonse-check</strong> 접속 가능!</p>
+          <code>배포 URL 예시:
+https://honggildong.github.io/jeonse-check</code>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-modal-close" onclick="closeModal()">닫기</button>
+      <button class="btn-modal-primary" onclick="window.open('https://developers.kakao.com','_blank')">카카오 개발자 센터 열기 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- KAKAO MAP SDK -->
+<!-- ↓↓↓ 아래 YOUR_KAKAO_API_KEY를 발급받은 JavaScript 키로 교체하세요 ↓↓↓ -->
+<script>
+const KAKAO_API_KEY = '95756e912755075d82b76293236e5d62';
+</script>
+<script>
+(function() {
+  // 카카오 API 키가 설정되지 않은 경우 배너 표시
+  if (KAKAO_API_KEY === 'YOUR_KAKAO_API_KEY') {
+    document.getElementById('api-banner').classList.add('show');
+  } else {
+    // 카카오맵 SDK 동적 로드
+    const s = document.createElement('script');
+    s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_API_KEY + '&libraries=services';
+    s.onload = initMap;
+    document.head.appendChild(s);
+  }
+})();
+
+let map = null;
+let geocoder = null;
+let marker = null;
+let infowindow = null;
+
+function initMap() {
+  if (typeof kakao === 'undefined') return;
+  document.getElementById('map-placeholder').style.display = 'none';
+  const container = document.getElementById('map');
+  const options = {
+    center: new kakao.maps.LatLng(37.5665, 126.9780),
+    level: 5
+  };
+  map = new kakao.maps.Map(container, options);
+  geocoder = new kakao.maps.services.Geocoder();
+  infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+}
+
+function geocodeAndMark(address, riskLevel, riskLabel) {
+  if (!map || !geocoder) return;
+  geocoder.addressSearch(address, function(result, status) {
+    if (status === kakao.maps.services.Status.OK) {
+      const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+      if (marker) marker.setMap(null);
+
+      const colors = { danger: '#D94040', warning: '#C97B1A', safe: '#2E7D52' };
+      const color = colors[riskLevel] || '#333';
+
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='36' height='44'>
+        <path d='M18 0C8 0 0 8 0 18c0 12 18 26 18 26S36 30 36 18C36 8 28 0 18 0z' fill='${color}'/>
+        <circle cx='18' cy='18' r='8' fill='white'/>
+      </svg>`;
+      const imgUrl = 'data:image/svg+xml;base64,' + btoa(svg);
+      const imgSize = new kakao.maps.Size(36, 44);
+      const imgOption = { offset: new kakao.maps.Point(18, 44) };
+      const markerImage = new kakao.maps.MarkerImage(imgUrl, imgSize, imgOption);
+
+      marker = new kakao.maps.Marker({ position: coords, image: markerImage });
+      marker.setMap(map);
+
+      infowindow.setContent(
+        '<div style="padding:8px 12px;font-size:13px;font-weight:700;color:' + color + ';white-space:nowrap;">' +
+        riskLabel + ' · ' + address.split(' ').slice(-2).join(' ') +
+        '</div>'
+      );
+      infowindow.open(map, marker);
+
+      map.setCenter(coords);
+      map.setLevel(4);
+
+      document.getElementById('map-header-info').textContent = '📍 ' + address;
+    }
+  });
+}
+</script>
+
+<script>
+// ── SAMPLE DATA (실제 API 연동 전 시뮬레이션 데이터) ──
+const SAMPLES = {
+  '마포': {
+    addr: '서울특별시 마포구 공덕동 105-3',
+    sub: '서울 마포구 · 빌라 전용 59㎡',
+    score: 72, level: 'warning',
+    checks: [
+      { color:'amber', emoji:'📊', name:'전세가율 분석', status:'주의', statusClass:'warning',
+        detail:'<strong>매매가 5.8억 / 전세가 4.2억 → 전세가율 72.4%</strong><br>한국부동산원 기준 위험 임계치(80%) 이내이나 주의 필요.<br>최근 6개월 매매가 소폭 하락 추세 — 전세가율 상승 가능성 있음.<br>출처: 한국부동산원 R-ONE 실거래가' },
+      { color:'red', emoji:'📄', name:'등기부등본 분석', status:'위험', statusClass:'danger',
+        detail:'<strong>근저당 2건 설정</strong><br>농협은행 2.1억 + 신한은행 0.8억 = 선순위 채권 2.9억<br>선순위 채권(2.9억) + 전세보증금(4.2억) = <strong>7.1억 > 시세(5.8억)</strong><br>⚠ 경매 시 보증금 전액 회수 불가 위험' },
+      { color:'green', emoji:'💸', name:'세금 체납 조회', status:'이상없음', statusClass:'safe',
+        detail:'<strong>국세청 조회 결과: 체납 없음</strong><br>국세 완납 확인 (홈택스 기준)<br>지방세 완납 확인 (서울시 위택스 기준)<br>최근 2년 체납 이력 없음 ✓' },
+      { color:'amber', emoji:'🛡', name:'전세보증보험', status:'조건부 가능', statusClass:'warning',
+        detail:'<strong>HUG 전세보증금반환보증: 가입 가능</strong><br>단, 근저당 설정으로 인해 보증한도 축소됨<br>현재 기준 최대 보증 가능 금액: 약 3.1억<br>⚠ 전세보증금(4.2억) 전액 보장 불가 — 재협의 필요' }
+    ],
+    months: ['12월','1월','2월','3월','4월','5월'],
+    saleH:  [68,68,70,69,68,67],
+    rentH:  [46,47,48,49,49,49],
+    ratio: 72.4,
+    tips: ['등기부등본의 선순위 채권 합산(2.9억)과 전세보증금(4.2억)이 시세(5.8억)를 초과합니다. 계약 전 집주인에게 근저당 해지를 요청하거나 전세금을 낮추세요.', '전세보증보험 보증한도(3.1억)가 전세금(4.2억)보다 낮아 전액 보호되지 않습니다. 보증금 조정이 필요합니다.', '전세가율 72%는 위험 기준에 근접합니다. 최근 집값 하락 추세를 감안하면 추가 상승 가능성에 주의하세요.']
+  },
+  '미추홀': {
+    addr: '인천광역시 미추홀구 주안동 778',
+    sub: '인천 미추홀구 · 빌라 전용 45㎡',
+    score: 91, level: 'danger',
+    checks: [
+      { color:'red', emoji:'📊', name:'전세가율 분석', status:'매우 위험', statusClass:'danger',
+        detail:'<strong>매매가 1.7억 / 전세가 1.6억 → 전세가율 94.1%</strong><br>⚠ 깡통전세 위험 매우 높음<br>최근 6개월 매매가 지속 하락 — 이미 역전세 진입<br>출처: 호갱노노·아실·한국부동산원 교차 검증' },
+      { color:'red', emoji:'📄', name:'등기부등본 분석', status:'위험', statusClass:'danger',
+        detail:'<strong>근저당 1건: 국민은행 1.2억 설정</strong><br>선순위 채권(1.2억) + 전세보증금(1.6억) = 2.8억<br>시세(1.7억) 대비 165% — <strong>경매 시 보증금 전액 손실 확실</strong><br>⚠ 경매 낙찰가 = 시세의 70~80% 수준임을 감안' },
+      { color:'amber', emoji:'💸', name:'세금 체납 조회', status:'체납 이력 있음', statusClass:'warning',
+        detail:'<strong>⚠ 2023년 종합소득세 체납 이력 발견</strong><br>국세는 전세보증금보다 법적으로 우선 변제됩니다.<br>집주인이 완납증명서 제출을 거부할 경우 즉시 계약 중단 권장<br>법률구조공단(132) 상담 권장' },
+      { color:'red', emoji:'🛡', name:'전세보증보험', status:'가입 불가', statusClass:'danger',
+        detail:'<strong>HUG 전세보증금반환보증: 가입 불가 ✗</strong><br>SGI서울보증: 가입 불가 ✗<br>전세가율 94% 초과 — 어떤 보증보험도 가입 불가<br>⚠ 이 물건은 보증금 보호 수단이 없습니다' }
+    ],
+    months: ['12월','1월','2월','3월','4월','5월'],
+    saleH:  [36,34,32,30,28,26],
+    rentH:  [31,30,29,28,27,25],
+    ratio: 94.1,
+    tips: ['전세가율 94%로 깡통전세 위험이 매우 높습니다. 이 물건과의 계약을 강력히 자제하세요.', '전세보증보험 가입이 불가한 물건으로 보증금 전액 손실 위험이 있습니다.', '집주인 세금 체납 이력이 확인됩니다. 국세는 전세보증금보다 우선 변제되어 추가 손실 가능성이 있습니다.', '지금 바로 주택도시보증공사(1566-9009) 또는 법률구조공단(132)에 상담을 권장합니다.']
+  },
+  '화곡': {
+    addr: '서울특별시 강서구 화곡동 371-2',
+    sub: '서울 강서구 · 빌라 전용 52㎡',
+    score: 38, level: 'safe',
+    checks: [
+      { color:'green', emoji:'📊', name:'전세가율 분석', status:'안전', statusClass:'safe',
+        detail:'<strong>매매가 4.1억 / 전세가 2.4억 → 전세가율 58.5%</strong><br>안전 기준(80%) 이하 — 양호한 수준<br>최근 6개월 매매가 안정적 유지<br>출처: 한국부동산원 R-ONE ✓' },
+      { color:'green', emoji:'📄', name:'등기부등본 분석', status:'이상없음', statusClass:'safe',
+        detail:'<strong>근저당 없음 (완전 무설정)</strong><br>가압류·압류·예고등기 없음 ✓<br>소유권 이전 이력 정상 ✓<br>소유자 본인 계약 확인 ✓' },
+      { color:'green', emoji:'💸', name:'세금 체납 조회', status:'이상없음', statusClass:'safe',
+        detail:'<strong>국세·지방세 모두 완납 확인</strong><br>국세(홈택스): 완납 ✓<br>지방세(위택스): 완납 ✓<br>최근 5년 체납 이력 없음 ✓' },
+      { color:'blue', emoji:'🛡', name:'전세보증보험', status:'전액 가입 가능', statusClass:'safe',
+        detail:'<strong>HUG 전세보증금반환보증: 전액 가입 가능 ✓</strong><br>SGI서울보증: 가입 가능 ✓<br>전세가율 58.5%로 보증한도 충분<br>예상 보험료: 연 약 30,720원 (보증금 2.4억 기준, 0.128%)' }
+    ],
+    months: ['12월','1월','2월','3월','4월','5월'],
+    saleH:  [70,71,70,69,70,69],
+    rentH:  [40,41,41,41,41,40],
+    ratio: 58.5,
+    tips: ['비교적 안전한 물건입니다. 다만 계약 당일 반드시 최신 등기부등본을 직접 재발급받아 확인하세요.', '전입신고와 확정일자는 이사 당일 즉시 받으세요. 단 하루라도 늦으면 대항력이 없습니다.', 'HUG 전세보증보험을 가입하면 만약의 상황에서 보증금을 안전하게 돌려받을 수 있습니다.']
+  }
+};
+
+// ── UI STATE ──
+let currentSection = 'search';
+let clItems = 0;
+let clTotal = 0;
+
+function showSection(name) {
+  currentSection = name;
+  document.querySelectorAll('.header-nav button').forEach((b,i) => {
+    b.classList.toggle('active', ['search','info','checklist'][i] === name);
+  });
+  const tabSec = document.getElementById('tab-section');
+  if (name === 'search') {
+    tabSec.classList.add('show');
+    document.getElementById('main-content').style.display = '';
+  } else if (name === 'info') {
+    tabSec.classList.add('show');
+    document.getElementById('main-content').style.display = '';
+    switchTab('info');
+  } else if (name === 'checklist') {
+    tabSec.classList.add('show');
+    document.getElementById('main-content').style.display = '';
+    switchTab('checklist');
+  }
+  window.scrollTo({ top: document.querySelector('.main').offsetTop - 80, behavior: 'smooth' });
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['info','checklist'][i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function setAddr(addr) {
+  document.getElementById('addr-input').value = addr;
+  document.getElementById('addr-input').focus();
+}
+
+// ── ANALYZE ──
+function doAnalyze() {
+  const addr = document.getElementById('addr-input').value.trim();
+  if (!addr) { document.getElementById('addr-input').focus(); return; }
+
+  setLoading(true);
+  document.getElementById('empty-state').style.display = 'none';
+  hideResults();
+  document.getElementById('skeleton').classList.add('show');
+
+  setTimeout(() => {
+    setLoading(false);
+    document.getElementById('skeleton').classList.remove('show');
+
+    let data = null;
+    for (const [key, val] of Object.entries(SAMPLES)) {
+      if (addr.includes('마포') || addr.includes('공덕')) { data = SAMPLES['마포']; break; }
+      if (addr.includes('미추홀') || addr.includes('주안')) { data = SAMPLES['미추홀']; break; }
+      if (addr.includes('화곡') || addr.includes('강서')) { data = SAMPLES['화곡']; break; }
+    }
+    if (!data) {
+      // 기본값: 무작위 위험도
+      const r = Math.random();
+      data = r < 0.3 ? SAMPLES['미추홀'] : r < 0.6 ? SAMPLES['마포'] : SAMPLES['화곡'];
+      data = JSON.parse(JSON.stringify(data));
+      data.addr = addr;
+      data.sub = '입력 주소 기준 분석';
+    }
+
+    renderResults(data);
+    if (map) geocodeAndMark(data.addr, data.level, {danger:'🔴 고위험', warning:'🟡 주의', safe:'🟢 안전'}[data.level]);
+  }, 1600);
+}
+
+function setLoading(on) {
+  const btn = document.getElementById('analyze-btn');
+  const spin = document.getElementById('spin');
+  const txt = document.getElementById('btn-text');
+  btn.disabled = on;
+  spin.classList.toggle('show', on);
+  txt.textContent = on ? '분석 중...' : '분석하기';
+}
+
+function hideResults() {
+  ['r-addr','r-checks','r-chart','r-tips','r-actions'].forEach(id => {
+    document.getElementById(id).classList.remove('show');
+  });
+}
+
+function renderResults(d) {
+  // Address + Score
+  document.getElementById('r-addr-text').textContent = d.addr;
+  document.getElementById('r-addr-sub').textContent = d.sub;
+
+  const pill = document.getElementById('r-risk-pill');
+  const labels = { danger:'🔴 고위험', warning:'🟡 주의', safe:'🟢 안전' };
+  pill.textContent = labels[d.level];
+  pill.className = 'risk-pill ' + d.level;
+
+  const scoreEl = document.getElementById('r-score');
+  const barEl = document.getElementById('r-score-bar');
+  scoreEl.textContent = d.score;
+  scoreEl.className = 'score-num ' + d.level;
+  barEl.className = 'score-bar-fill ' + d.level;
+  setTimeout(() => barEl.style.width = d.score + '%', 100);
+
+  const descs = {
+    danger: '⚠ 고위험 — 이 물건은 계약을 즉시 중단하고 전문가 상담을 권장합니다',
+    warning: '⚠ 주의 — 여러 항목에서 위험 신호가 있습니다. 전문가 검토 후 계약하세요',
+    safe: '✓ 양호 — 주요 위험 지표가 안전 범위 내에 있습니다. 기본 주의사항을 확인하세요'
+  };
+  document.getElementById('r-score-desc').textContent = descs[d.level];
+
+  // Checks
+  const list = document.getElementById('check-list');
+  list.innerHTML = d.checks.map(c => `
+    <div class="check-item" onclick="this.classList.toggle('open')">
+      <div class="check-head">
+        <div class="check-icon-wrap ${c.color}">${c.emoji}</div>
+        <div class="check-info">
+          <div class="check-name">${c.name}</div>
+          <div class="check-status ${c.statusClass}">${c.status}</div>
+        </div>
+        <div class="check-arrow">▼</div>
+      </div>
+      <div class="check-body"><div class="check-body-inner">${c.detail}</div></div>
+    </div>
+  `).join('');
+
+  // Chart
+  const maxH = 85;
+  const maxSale = Math.max(...d.saleH);
+  const ca = document.getElementById('chart-area');
+  ca.innerHTML = d.months.map((m,i) => {
+    const sh = Math.round((d.saleH[i] / maxSale) * maxH);
+    const rh = Math.round((d.rentH[i] / maxSale) * maxH);
+    return `<div class="bar-group">
+      <div class="bars">
+        <div class="bar sale" style="height:0px" data-h="${sh}"></div>
+        <div class="bar rent" style="height:0px" data-h="${rh}"></div>
+      </div>
+      <div class="bar-month">${m}</div>
+    </div>`;
+  }).join('');
+  setTimeout(() => {
+    ca.querySelectorAll('.bar').forEach(b => b.style.height = b.dataset.h + 'px');
+  }, 200);
+
+  const ratioBadge = document.getElementById('r-ratio-badge');
+  ratioBadge.textContent = d.ratio + '%';
+  ratioBadge.className = 'ratio-badge ' + d.level;
+
+  // Tips
+  const tl = document.getElementById('tips-list');
+  tl.innerHTML = d.tips.map(t => `<li>${t}</li>`).join('');
+
+  // Show all
+  setTimeout(() => {
+    ['r-addr','r-checks','r-chart','r-tips','r-actions'].forEach((id, i) => {
+      setTimeout(() => document.getElementById(id).classList.add('show'), i * 80);
+    });
+  }, 50);
+}
+
+// ── CHECKLIST ──
+function toggleCl(el) {
+  el.classList.toggle('done');
+  const all = document.querySelectorAll('.cl-item').length;
+  const done = document.querySelectorAll('.cl-item.done').length;
+  document.getElementById('cl-count').textContent = done + ' / ' + all + ' 완료';
+  document.getElementById('cl-bar').style.width = Math.round((done/all)*100) + '%';
+}
+
+// ── MODAL ──
+function openModal() {
+  document.getElementById('modal-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── ENTER KEY ──
+document.getElementById('addr-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doAnalyze();
+});
+</script>
+</body>
+</html>
