@@ -178,9 +178,14 @@ header {
   display: flex;
   gap: 10px;
   margin-bottom: 14px;
+  position: relative;
+}
+.addr-input-wrap {
+  flex: 1;
+  position: relative;
 }
 #addr-input {
-  flex: 1;
+  width: 100%;
   padding: 14px 18px;
   border: 1.5px solid rgba(255,255,255,0.15);
   border-radius: 10px;
@@ -193,6 +198,66 @@ header {
 }
 #addr-input::placeholder { color: rgba(255,255,255,0.3); }
 #addr-input:focus { border-color: var(--red); }
+
+/* ── ADDRESS AUTOCOMPLETE DROPDOWN ── */
+.addr-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0; right: 0;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  z-index: 200;
+  border: 1px solid var(--gray-100);
+}
+.addr-dropdown.show { display: block; }
+.addr-dd-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 16px;
+  cursor: pointer;
+  transition: background 0.12s;
+  border-bottom: 1px solid var(--gray-100);
+}
+.addr-dd-item:last-child { border-bottom: none; }
+.addr-dd-item:hover, .addr-dd-item.focused { background: var(--red-light); }
+.addr-dd-pin { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.addr-dd-texts { flex: 1; min-width: 0; }
+.addr-dd-road {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.addr-dd-road em {
+  color: var(--red);
+  font-style: normal;
+}
+.addr-dd-jibun {
+  font-size: 11px;
+  color: var(--gray-400);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.addr-dd-loading {
+  padding: 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--gray-400);
+}
+.addr-dd-empty {
+  padding: 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--gray-400);
+}
 .btn-analyze {
   padding: 14px 28px;
   background: var(--red);
@@ -884,9 +949,12 @@ footer strong { color: rgba(255,255,255,0.7); }
   <div class="search-container">
     <div class="search-label">🔍 주소 입력 (도로명 또는 지번 모두 가능)</div>
     <div class="search-row">
-      <input type="text" id="addr-input"
-        placeholder="예: 서울특별시 마포구 공덕동 105-3"
-        autocomplete="off" />
+      <div class="addr-input-wrap">
+        <input type="text" id="addr-input"
+          placeholder="예: 관음로 295"
+          autocomplete="off" />
+        <div class="addr-dropdown" id="addr-dropdown"></div>
+      </div>
       <button class="btn-analyze" id="analyze-btn" onclick="doAnalyze()">
         <span class="spinner" id="spin"></span>
         <span id="btn-text">분석하기</span>
@@ -1610,10 +1678,122 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// ── ENTER KEY ──
-document.getElementById('addr-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doAnalyze();
-});
+// ── ADDRESS AUTOCOMPLETE ──
+(function() {
+  const input = document.getElementById('addr-input');
+  const dropdown = document.getElementById('addr-dropdown');
+  let _debounceTimer = null;
+  let _ddFocusIdx = -1;
+  let _ddItems = [];
+
+  function highlightMatch(text, query) {
+    if (!query) return text;
+    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp('(' + escaped + ')', 'gi'), '<em>$1</em>');
+  }
+
+  function showDropdown(results, query) {
+    _ddFocusIdx = -1;
+    _ddItems = results;
+    if (!results || results.length === 0) {
+      dropdown.innerHTML = '<div class="addr-dd-empty">검색 결과가 없습니다</div>';
+    } else {
+      dropdown.innerHTML = results.slice(0, 6).map((r, i) => {
+        const road = r.road_address ? r.road_address.address_name : '';
+        const jibun = r.address ? r.address.address_name : r.address_name;
+        const displayMain = road || jibun;
+        const displaySub = road ? '지번: ' + jibun : '';
+        return `<div class="addr-dd-item" data-idx="${i}" onmousedown="selectDropdownItem(${i})">
+          <div class="addr-dd-pin">📍</div>
+          <div class="addr-dd-texts">
+            <div class="addr-dd-road">${highlightMatch(displayMain, query)}</div>
+            ${displaySub ? `<div class="addr-dd-jibun">${displaySub}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+    dropdown.classList.add('show');
+  }
+
+  function hideDropdown() {
+    dropdown.classList.remove('show');
+    dropdown.innerHTML = '';
+    _ddItems = [];
+    _ddFocusIdx = -1;
+  }
+
+  // 전역 함수: 아이템 선택
+  window.selectDropdownItem = function(idx) {
+    const r = _ddItems[idx];
+    if (!r) return;
+    const chosen = r.road_address ? r.road_address.address_name : r.address_name;
+    input.value = chosen;
+    hideDropdown();
+    // 바로 분석 실행
+    runAnalysis(chosen);
+  };
+
+  input.addEventListener('input', function() {
+    const q = this.value.trim();
+    clearTimeout(_debounceTimer);
+    if (q.length < 2) { hideDropdown(); return; }
+
+    // geocoder 없으면 드롭다운 생략
+    if (!window.geocoder) { hideDropdown(); return; }
+
+    dropdown.innerHTML = '<div class="addr-dd-loading">검색 중...</div>';
+    dropdown.classList.add('show');
+
+    _debounceTimer = setTimeout(() => {
+      window.geocoder.addressSearch(q, function(results, status) {
+        if (status === kakao.maps.services.Status.OK) {
+          showDropdown(results, q);
+        } else {
+          hideDropdown();
+        }
+      });
+    }, 280);
+  });
+
+  // 키보드 탐색 (↑↓ Enter)
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      if (_ddFocusIdx >= 0 && _ddItems[_ddFocusIdx]) {
+        e.preventDefault();
+        selectDropdownItem(_ddFocusIdx);
+      } else {
+        hideDropdown();
+        doAnalyze();
+      }
+      return;
+    }
+    if (!dropdown.classList.contains('show')) return;
+    const items = dropdown.querySelectorAll('.addr-dd-item');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      _ddFocusIdx = Math.min(_ddFocusIdx + 1, items.length - 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      _ddFocusIdx = Math.max(_ddFocusIdx - 1, 0);
+    } else if (e.key === 'Escape') {
+      hideDropdown(); return;
+    } else { return; }
+    items.forEach((el, i) => el.classList.toggle('focused', i === _ddFocusIdx));
+    if (_ddItems[_ddFocusIdx]) {
+      const r = _ddItems[_ddFocusIdx];
+      input.value = r.road_address ? r.road_address.address_name : r.address_name;
+    }
+  });
+
+  // 바깥 클릭 시 닫기
+  document.addEventListener('click', function(e) {
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+      hideDropdown();
+    }
+  });
+})();
+
+
 </script>
 </body>
 </html>
