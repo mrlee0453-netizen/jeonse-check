@@ -258,6 +258,127 @@ header {
   padding: 0 4px;
 }
 
+/* ── ADDRESS CONFIRM MODAL ── */
+#addr-confirm-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+}
+#addr-confirm-overlay.show { display: flex; }
+.addr-confirm-box {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  width: 480px;
+  max-width: calc(100vw - 32px);
+  overflow: hidden;
+  animation: slideUp 0.22s ease;
+}
+.addr-confirm-head {
+  padding: 20px 24px 14px;
+  border-bottom: 1px solid var(--gray-100);
+}
+.addr-confirm-head h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 4px;
+}
+.addr-confirm-head p {
+  font-size: 13px;
+  color: var(--gray-400);
+}
+.addr-confirm-query {
+  display: inline-block;
+  background: var(--gray-100);
+  color: var(--gray-800);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 5px;
+  font-size: 13px;
+}
+.addr-confirm-list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 10px 12px;
+}
+.addr-confirm-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.13s;
+  border: 1.5px solid transparent;
+}
+.addr-confirm-item:hover { background: var(--gray-50); }
+.addr-confirm-item.selected { border-color: var(--red); background: var(--red-light); }
+.addr-confirm-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  background: var(--red-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.addr-confirm-texts { flex: 1; }
+.addr-confirm-road {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-900);
+  line-height: 1.4;
+}
+.addr-confirm-jibun {
+  font-size: 12px;
+  color: var(--gray-400);
+  margin-top: 2px;
+}
+.addr-confirm-empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--gray-400);
+  font-size: 14px;
+}
+.addr-confirm-foot {
+  padding: 14px 20px;
+  border-top: 1px solid var(--gray-100);
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.btn-addr-cancel {
+  padding: 10px 20px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--gray-600);
+  font-family: var(--sans);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.13s;
+}
+.btn-addr-cancel:hover { background: var(--gray-50); }
+.btn-addr-confirm {
+  padding: 10px 24px;
+  background: var(--red);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.13s;
+}
+.btn-addr-confirm:hover { background: #C03535; }
+.btn-addr-confirm:disabled { opacity: 0.45; cursor: not-allowed; }
+
 /* ── MAIN LAYOUT ── */
 .main {
   max-width: 1200px;
@@ -1065,6 +1186,21 @@ https://honggildong.github.io/jeonse-check</code>
   </div>
 </div>
 
+<!-- ADDRESS CONFIRM MODAL -->
+<div id="addr-confirm-overlay">
+  <div class="addr-confirm-box">
+    <div class="addr-confirm-head">
+      <h3>📍 이 주소가 맞나요?</h3>
+      <p>검색어 <span class="addr-confirm-query" id="confirm-query-text"></span> 에 대한 결과입니다. 분석할 주소를 선택해 주세요.</p>
+    </div>
+    <div class="addr-confirm-list" id="addr-confirm-list"></div>
+    <div class="addr-confirm-foot">
+      <button class="btn-addr-cancel" onclick="closeAddrConfirm()">취소</button>
+      <button class="btn-addr-confirm" id="btn-addr-confirm-ok" onclick="confirmAddr()" disabled>이 주소로 분석하기</button>
+    </div>
+  </div>
+</div>
+
 <!-- KAKAO MAP SDK -->
 <!-- ↓↓↓ 아래 YOUR_KAKAO_API_KEY를 발급받은 JavaScript 키로 교체하세요 ↓↓↓ -->
 <script>
@@ -1072,16 +1208,23 @@ const KAKAO_API_KEY = '95756e912755075d82b76293236e5d62';
 </script>
 <script>
 (function() {
-  // 카카오 API 키가 설정되지 않은 경우 배너 표시
   if (KAKAO_API_KEY === 'YOUR_KAKAO_API_KEY') {
     document.getElementById('api-banner').classList.add('show');
-  } else {
-    // 카카오맵 SDK 동적 로드
-    const s = document.createElement('script');
-    s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_API_KEY + '&libraries=services';
-    s.onload = initMap;
-    document.head.appendChild(s);
+    return;
   }
+  // 카카오맵 SDK 동적 로드
+  const s = document.createElement('script');
+  s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_API_KEY + '&libraries=services';
+  s.onload = function() {
+    // SDK가 완전히 준비될 때까지 대기
+    kakao.maps.load(initMap);
+  };
+  s.onerror = function() {
+    // API 키 도메인 미등록 등으로 실패 시 배너 표시
+    document.getElementById('api-banner').classList.add('show');
+    console.warn('[안심전세체크] 카카오맵 로드 실패 — 카카오 개발자센터에서 도메인을 등록해주세요.');
+  };
+  document.head.appendChild(s);
 })();
 
 let map = null;
@@ -1245,11 +1388,84 @@ function setAddr(addr) {
   document.getElementById('addr-input').focus();
 }
 
-// ── ANALYZE ──
+// ── ADDRESS CONFIRM MODAL ──
+let _pendingAddr = null;
+let _selectedAddrIdx = null;
+let _addrCandidates = [];
+
 function doAnalyze() {
   const addr = document.getElementById('addr-input').value.trim();
   if (!addr) { document.getElementById('addr-input').focus(); return; }
 
+  // 카카오 geocoder가 준비된 경우 → 주소 확인 모달 표시
+  if (geocoder) {
+    geocoder.addressSearch(addr, function(results, status) {
+      if (status === kakao.maps.services.Status.OK && results.length > 0) {
+        openAddrConfirm(addr, results);
+      } else {
+        // 검색 결과 없으면 바로 분석
+        runAnalysis(addr);
+      }
+    });
+  } else {
+    // 카카오 미연결 시 바로 분석
+    runAnalysis(addr);
+  }
+}
+
+function openAddrConfirm(query, results) {
+  _addrCandidates = results;
+  _selectedAddrIdx = null;
+  document.getElementById('confirm-query-text').textContent = query;
+  document.getElementById('btn-addr-confirm-ok').disabled = true;
+
+  const list = document.getElementById('addr-confirm-list');
+  if (results.length === 0) {
+    list.innerHTML = '<div class="addr-confirm-empty">검색 결과가 없습니다.<br>다른 주소로 다시 시도해 주세요.</div>';
+  } else {
+    list.innerHTML = results.slice(0, 5).map((r, i) => {
+      const road = r.road_address ? r.road_address.address_name : '';
+      const jibun = r.address ? r.address.address_name : r.address_name;
+      return `<div class="addr-confirm-item" id="addr-item-${i}" onclick="selectAddrItem(${i})">
+        <div class="addr-confirm-icon">📍</div>
+        <div class="addr-confirm-texts">
+          <div class="addr-confirm-road">${road || jibun}</div>
+          ${road ? `<div class="addr-confirm-jibun">지번: ${jibun}</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('addr-confirm-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function selectAddrItem(idx) {
+  _selectedAddrIdx = idx;
+  document.querySelectorAll('.addr-confirm-item').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+  document.getElementById('btn-addr-confirm-ok').disabled = false;
+}
+
+function confirmAddr() {
+  if (_selectedAddrIdx === null) return;
+  const r = _addrCandidates[_selectedAddrIdx];
+  const chosenAddr = r.road_address ? r.road_address.address_name : r.address_name;
+  // 선택된 주소를 input에도 반영
+  document.getElementById('addr-input').value = chosenAddr;
+  closeAddrConfirm();
+  runAnalysis(chosenAddr);
+}
+
+function closeAddrConfirm() {
+  document.getElementById('addr-confirm-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+  _selectedAddrIdx = null;
+}
+
+// ── ANALYZE (실제 분석 실행) ──
+function runAnalysis(addr) {
   setLoading(true);
   document.getElementById('empty-state').style.display = 'none';
   hideResults();
@@ -1260,13 +1476,13 @@ function doAnalyze() {
     document.getElementById('skeleton').classList.remove('show');
 
     let data = null;
-    for (const [key, val] of Object.entries(SAMPLES)) {
-      if (addr.includes('마포') || addr.includes('공덕')) { data = SAMPLES['마포']; break; }
-      if (addr.includes('미추홀') || addr.includes('주안')) { data = SAMPLES['미추홀']; break; }
-      if (addr.includes('화곡') || addr.includes('강서')) { data = SAMPLES['화곡']; break; }
-    }
-    if (!data) {
-      // 기본값: 무작위 위험도
+    if (addr.includes('마포') || addr.includes('공덕')) {
+      data = SAMPLES['마포'];
+    } else if (addr.includes('미추홀') || addr.includes('주안')) {
+      data = SAMPLES['미추홀'];
+    } else if (addr.includes('화곡') || addr.includes('강서')) {
+      data = SAMPLES['화곡'];
+    } else {
       const r = Math.random();
       data = r < 0.3 ? SAMPLES['미추홀'] : r < 0.6 ? SAMPLES['마포'] : SAMPLES['화곡'];
       data = JSON.parse(JSON.stringify(data));
@@ -1387,7 +1603,12 @@ function closeModal() {
   document.getElementById('modal-overlay').classList.remove('show');
   document.body.style.overflow = '';
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    closeAddrConfirm();
+  }
+});
 
 // ── ENTER KEY ──
 document.getElementById('addr-input').addEventListener('keydown', e => {
